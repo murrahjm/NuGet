@@ -180,8 +180,9 @@ class NuGet {
   
   #Test Method, tests if the system is in the desired state 
   [bool] Test () { 
+    $PublishFolder = "$($this.PackageSource)\Packages"
     Import-Module $PSScriptRoot\tools.psm1
-    $Conf = webconfvar -AllowNugetPackagePush $This.AllowNugetPackagePush -AllowPackageOverwrite $This.AllowPackageOverwrite -PackageSource $This.PackageSource -APIKey $This.APIKey
+    $Conf = webconfvar -AllowNugetPackagePush $This.AllowNugetPackagePush -AllowPackageOverwrite $This.AllowPackageOverwrite -PackageSource $PublishFolder -APIKey $This.APIKey
     Write-Verbose 'Working on IIS install'
     if (! (IIS -Action test))
     {
@@ -193,7 +194,7 @@ class NuGet {
       return $false
     }
     Write-Verbose 'Testing package directory'
-    if (! (pkg -Action test -path $This.PackageSource))
+    if (! (pkg -Action test -path $PublishFolder))
     {
       return $false
     }
@@ -216,9 +217,10 @@ class NuGet {
   } 
   
   #Replaces Set-TargetResource 
-  [void] Set () { 
+  [void] Set () {
+    $PublishFolder = "$($this.PackageSource)\Packages" 
     Import-Module $PSScriptRoot\tools.psm1
-    $Conf = webconfvar -AllowNugetPackagePush $this.AllowNugetPackagePush -AllowPackageOverwrite $this.AllowPackageOverwrite -PackageSource $this.PackageSource -APIKey $this.APIKey
+    $Conf = webconfvar -AllowNugetPackagePush $this.AllowNugetPackagePush -AllowPackageOverwrite $this.AllowPackageOverwrite -PackageSource $PublishFolder -APIKey $this.APIKey
     Write-Verbose 'Working on IIS install'
     if (! (IIS -Action test))
     {
@@ -232,10 +234,10 @@ class NuGet {
       ASP -Action set
     }
     Write-Verbose 'Working on package directory'
-    if (! (pkg -Action test -path $This.PackageSource))
+    if (! (pkg -Action test -path $PublishFolder))
     {
       Write-Verbose 'Creating Package directory'
-      pkg -Action set -path $This.PackageSource
+      pkg -Action set -path $PublishFolder
     }
     Write-Verbose 'Testing for the website'
     if (! (website -Name $this.Name -Action Test))
