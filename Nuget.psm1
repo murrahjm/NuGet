@@ -179,7 +179,10 @@ class NuGet {
   } 
   
   #Test Method, tests if the system is in the desired state 
-  [bool] Test () { 
+  [bool] Test () {
+    #using publishfolder to differentiate between the root of the website and the actual subfolder where published modules should live.
+    #previously everything ended up in the root of the website which caused a huge mess when a bunch of files were uploaded.
+    #ideally the PackageSource property would be changed to something more accurate like WebSitePath or something but that would be a breaking change 
     $PublishFolder = "$($this.PackageSource)\Packages"
     Import-Module $PSScriptRoot\tools.psm1
     $Conf = webconfvar -AllowNugetPackagePush $This.AllowNugetPackagePush -AllowPackageOverwrite $This.AllowPackageOverwrite -PackageSource $PublishFolder -APIKey $This.APIKey
@@ -218,6 +221,9 @@ class NuGet {
   
   #Replaces Set-TargetResource 
   [void] Set () {
+    #using publishfolder to differentiate between the root of the website and the actual subfolder where published modules should live.
+    #previously everything ended up in the root of the website which caused a huge mess when a bunch of files were uploaded.
+    #ideally the PackageSource property would be changed to something more accurate like WebSitePath or something but that would be a breaking change 
     $PublishFolder = "$($this.PackageSource)\Packages" 
     Import-Module $PSScriptRoot\tools.psm1
     $Conf = webconfvar -AllowNugetPackagePush $this.AllowNugetPackagePush -AllowPackageOverwrite $this.AllowPackageOverwrite -PackageSource $PublishFolder -APIKey $this.APIKey
